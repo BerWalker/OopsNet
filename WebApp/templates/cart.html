@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="padding: 4rem 0;">
+    <span class="section-title">SHOPPING_CART_ARRAY</span>
+    <div id="cart-items-container" class="reveal">
+        <!-- Cart items populated by JS -->
+    </div>
+
+    <div id="cart-summary" class="reveal" style="margin-top: 4rem; display: flex; align-items: flex-end; justify-content: space-between;">
+        <a href="/products" class="btn btn-outline" style="font-size: 0.7rem; padding: 1rem 2rem;">&larr; CONTINUE_SHOPPING</a>
+        <div style="text-align: right;">
+            <div class="cart-total">
+                <span style="font-size: 0.8rem; color: #444; font-family: var(--font-mono);">TOTAL_VALUE (USD)</span>
+                <div id="total-amount">$0.00</div>
+            </div>
+            <button class="btn" style="margin-top: 2rem; padding: 1.5rem 4rem;" id="checkout-btn">INITIATE_CHECKOUT_PROTOCOL</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        cart.renderCartPage();
+    });
+</script>
+{% endblock %}

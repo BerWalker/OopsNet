@@ -39,11 +39,11 @@ check_port "inet-client-01" "10.0.20.10" "22" "false" "Tentativa SSH (Proibido)"
 check_port "inet-client-01" "10.0.20.10" "443" "false" "Tentativa HTTPS (Não configurado)"
 
 echo -e "\n${YELLOW}2. ZONA EXTERNA (Internet) -> REDE INTERNA${NC}"
-check_port "inet-client-01" "10.0.30.10" "3306" "false" "Salto direto p/ Banco"
+check_port "inet-client-01" "10.0.30.10" "5432" "false" "Salto direto p/ Banco"
 check_port "inet-client-01" "10.0.30.10" "80" "false" "Salto direto p/ Interna"
 
 echo -e "\n${YELLOW}3. ZONA DMZ -> REDE INTERNA${NC}"
-check_port "dmz-webserver-01" "10.0.30.10" "3306" "true" "Conexão de Banco Permitida"
+check_port "dmz-webserver-01" "10.0.30.10" "5432" "true" "Conexão de Banco Permitida"
 check_port "dmz-webserver-01" "10.0.30.10" "22" "false" "Tentativa SSH Interno (Proibido)"
 check_port "dmz-webserver-01" "10.0.30.10" "80" "false" "Tentativa HTTP Interno (Proibido)"
 

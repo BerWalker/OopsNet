@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1>DEFEND<br>EVERYTHING</h1>
+        <p>Enterprise-grade security infrastructure for the zero-trust era. Minimal, powerful, and unconditionally secure.</p>
+    </div>
+</section>
+
+<section class="container products-section" id="solutions">
+    <span class="section-title">CURRENT SOLUTIONS</span>
+    <div class="grid">
+        {% for product in products %}
+        <div class="product-card reveal">
+            <a href="/product/{{ product.id }}">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description }}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="price">${{ product.price }}</span>
+                        <span class="btn btn-outline">VIEW_DETAILS</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

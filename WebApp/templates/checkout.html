@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="padding: 4rem 0;">
+    <span class="section-title">ORDER_VALIDATION_PROTOCOL</span>
+    <h2 style="font-size: 3rem; margin-bottom: 2rem;">CHECKOUT</h2>
+
+    <div class="product-detail-grid">
+        <form id="checkout-form" class="reveal">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="form-group">
+                    <label for="full_name">FULL_NAME</label>
+                    <input type="text" id="full_name" class="form-control" required placeholder="J. DOE">
+                </div>
+                <div class="form-group">
+                    <label for="email">EMAIL_ADDRESS</label>
+                    <input type="email" id="email" class="form-control" required placeholder="IDENTITY@NETWORK.SEC">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">SHIPPING_ADDRESS</label>
+                <input type="text" id="address" class="form-control" required placeholder="PHYSICAL_LOCATION_COORDINATES">
+            </div>
+
+            <div style="margin-top: 3rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                <span class="section-title">PAYMENT_GATEWAY_CONFIG</span>
+                <div class="form-group">
+                    <label for="card_name">CARDHOLDER_NAME</label>
+                    <input type="text" id="card_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="card_num">CREDIT_CARD_NUMBER</label>
+                    <input type="text" id="card_num" class="form-control" required placeholder="XXXX XXXX XXXX XXXX">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="form-group">
+                        <label for="expiry">EXPIRY_DATE</label>
+                        <input type="text" id="expiry" class="form-control" required placeholder="MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">SEC_CODE (CVV)</label>
+                        <input type="text" id="cvv" class="form-control" required placeholder="XXX">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%; padding: 1.5rem; margin-top: 2rem;">AUTHORIZE_PAYMENT</button>
+        </form>
+
+        <div class="reveal" style="background: rgba(157, 78, 221, 0.05); padding: 2rem; border: 1px solid var(--border-color);">
+            <span class="section-title">ORDER_SUMMARY</span>
+            <div id="checkout-summary-items">
+                <!-- Items populated by JS -->
+            </div>
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; font-weight: bold; font-family: var(--font-mono);">
+                <span>TOTAL:</span>
+                <span id="checkout-total">$0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="success-icon">✓</div>
+            <span class="section-title">TRANSACTION_SUCCESSFUL</span>
+            <h2 style="margin-bottom: 2rem;">ORDER COMPLETED</h2>
+            <div class="order-detail-row">
+                <span>TERMINAL_USER:</span>
+                <span id="modal-user-name" style="font-weight: bold;">-</span>
+            </div>
+            <div class="order-detail-row">
+                <span>IDENTITY_EMAIL:</span>
+                <span id="modal-user-email" style="color: #888;">-</span>
+            </div>
+            <div class="order-detail-row" style="margin-bottom: 2rem;">
+                <span>PROTOCOL_ID:</span>
+                <span id="modal-order-id" class="order-id-badge">-</span>
+            </div>
+            <button id="close-modal-btn" class="btn" style="width: 100%;">RETURN_TO_STORE</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cartItems = JSON.parse(localStorage.getItem('cyber_cart') || '[]');
+        const summaryContainer = document.getElementById('checkout-summary-items');
+        let total = 0;
+
+        cartItems.forEach(item => {
+            const itemEl = document.createElement('div');
+            itemEl.style.display = 'flex';
+            itemEl.style.justifyContent = 'space-between';
+            itemEl.style.fontSize = '0.9rem';
+            itemEl.style.marginBottom = '0.5rem';
+            itemEl.style.color = '#888';
+            itemEl.innerHTML = `<span>${item.name} x${item.quantity}</span><span>$${(item.price * item.quantity).toFixed(2)}</span>`;
+            summaryContainer.appendChild(itemEl);
+            total += item.price * item.quantity;
+        });
+
+        document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+
+        const expiryInput = document.getElementById('expiry');
+        if (expiryInput) {
+            expiryInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                if (value.length > 4) value = value.slice(0, 4);
+                if (value.length > 2) {
+                    e.target.value = value.slice(0, 2) + '/' + value.slice(2);
+                } else {
+                    e.target.value = value;
+                }
+            });
+        }
+
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                full_name: document.getElementById('full_name').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                card_num: document.getElementById('card_num').value,
+                expiry: document.getElementById('expiry').value
+            };
+
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                // Clear cart
+                localStorage.removeItem('cyber_cart');
+                
+                // Populate and show modal
+                document.getElementById('modal-user-name').textContent = result.user_info.name;
+                document.getElementById('modal-user-email').textContent = result.user_info.email;
+                document.getElementById('modal-order-id').textContent = result.order_id;
+                
+                const modal = document.getElementById('success-modal');
+                modal.classList.add('active');
+
+                document.getElementById('close-modal-btn').addEventListener('click', () => {
+                    window.location.href = '/';
+                });
+            } else {
+                alert('ERROR: ' + result.message);
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dot.store | Premium Security Solutions</title>
+    <meta name="description" content="Explore advanced cybersecurity solutions: XDR, Pentesting suites, and Zero-Trust infrastructure.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header>
+        <div class="container nav" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <a href="/" class="logo" style="margin-right: auto;">dot.store</a>
+            <div class="nav-links" style="display: flex; gap: 2rem; margin-left: auto;">
+                <a href="/products">SOLUTIONS</a>
+                <a href="/cart">CART (<span id="cart-count">0</span>)</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer style="padding: 2rem 0; font-size: 0.7rem;">
+        <div class="container">
+            <p>&copy; 2026 DOT.STORE INFRASTRUCTURE. ALL RIGHTS RESERVED.</p>
+            <p style="margin-top: 0.5rem; color: #1a1a1a;">SECURE_HANDSHAKE_ESTABLISHED // ENCRYPTED_TUNNEL_ACTIVE</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='cart.js') }}"></script>
+    <script>
+        // Set initial cart count
+        document.addEventListener('DOMContentLoaded', () => {
+             const cartCount = JSON.parse(localStorage.getItem('cyber_cart') || '[]').reduce((sum, item) => sum + item.quantity, 0);
+             document.getElementById('cart-count').textContent = cartCount;
+        });
+    </script>
+</body>
+</html>

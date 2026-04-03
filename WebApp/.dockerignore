@@ -1,0 +1,172 @@
+# ============================================================================
+# Created by https://dockerignore.com/
+# FRAMEWORK TEMPLATE for Flask
+# Website: https://flask.palletsprojects.com/
+# Repository: https://github.com/pallets/flask
+# ============================================================================
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TEMPLATE OVERVIEW & USAGE NOTES
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# • TEMPLATE TYPE: Framework Template
+# • PURPOSE: Flask framework specific ignore patterns
+# • DESIGN PHILOSOPHY: Self-contained with all necessary patterns including security
+# • COMBINATION GUIDANCE: Use standalone - no need to combine with other templates
+# • SECURITY CONSIDERATIONS: Includes security patterns for .env files and credentials
+# • BEST PRACTICES: Review before use, test with your specific Flask setup
+# • OFFICIAL SOURCES: Flask community patterns and best practices
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# SECURITY & SENSITIVE DATA PROTECTION (ALWAYS FIRST!)
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# CRITICAL: Prevent sensitive data from being included in Docker images
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# ENVIRONMENT VARIABLES & CONFIGURATION FILES
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# Environment files contain sensitive API keys, database credentials,
+# and other secrets that must not be included in Docker images
+
+.env
+.env.*
+.env.*.local
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# APPLICATION SECRETS & CREDENTIALS
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+# Application secrets, credentials, and sensitive configuration files
+**/config/credentials.*
+**/config/secrets.*
+**/keys/
+**/passwords/
+**/private/
+**/secrets/
+*.auth
+*.authz
+*.password
+*.secret
+*.secrets
+*.token
+*_tokens
+*password*
+apikeys.*
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Staging.json
+connectionstrings.config
+credentials
+database.ini
+database.yml
+dbconfig.xml
+secrets.json
+secrets.yaml
+secrets.yml
+tokens.*
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# BUILD ARTIFACTS AND OUTPUT
+**/.out/
+**/.output/
+**/build/
+**/dist/
+**/sdist/
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# CACHE AND TEMPORARY FILES
+**/.cache/
+**/.vite-cache/
+**/.vite/
+**/temp/
+**/tmp/
+*.cache
+*.temp
+*.tmp
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# LOGS AND DEBUG FILES
+**/logs/
+*.log
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# CONFIGURATION AND ENVIRONMENT
+.env.testing
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# TESTING AND COVERAGE
+**/coverage/
+**/test-results/
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# OTHER
+!*/migrations/__init__.py
+!*/migrations/versions/__init__.py
+*$py.class
+**/*.egg-info/
+**/.bzr/
+**/.cvs/
+**/.eggs/
+**/.git/
+**/.hg/
+**/.mypy_cache/
+**/.pyre/
+**/.pytest_cache/
+**/.pytype/
+**/.svn/
+**/__pycache__/
+**/develop-eggs/
+**/downloads/
+**/eggs/
+**/flask_session/
+**/instance/
+**/lib/
+**/lib64/
+**/media/
+**/migrations/
+**/migrations/versions/
+**/parts/
+**/share/python-wheels/
+**/static/
+**/staticfiles/
+**/uploads/
+**/var/
+**/wheels/
+*.bak
+*.db
+*.egg
+*.old
+*.orig
+*.py[cod]
+*.save
+*.sqlite
+*.sqlite3
+*.swo
+*.swp
+*.test.db
+*.test.sqlite
+*.test.sqlite3
+*/migrations/*.py
+*/migrations/versions/*.py
+*~
+._*
+.DS_Store
+.DS_Store?
+.flaskenv
+.flaskenv.*
+.gitattributes
+.gitignore
+.gitmodules
+.installed.cfg
+.Python
+.Spotlight-V100
+.Trashes
+alembic.ini
+db.sqlite3
+db.sqlite3-journal
+desktop.ini
+ehthumbs.db
+local_settings.py
+MANIFEST
+Thumbs.db

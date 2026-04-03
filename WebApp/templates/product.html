@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+    <a href="/products" class="btn btn-outline" style="margin-bottom: 2rem; font-size: 0.7rem; border-color: rgba(157, 78, 221, 0.2);">&larr; BACK_TO_SOLUTIONS</a>
+    <div class="product-detail-grid">
+        <div class="reveal">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-detail-image">
+        </div>
+        <div class="product-detail-info reveal">
+            <span class="section-title">PRODUCT_ID: {{ product.id }}</span>
+            <h2>{{ product.name }}</h2>
+            <p class="description">{{ product.description }}</p>
+            <div style="margin-bottom: 2rem;">
+                <span class="price" style="font-size: 2rem;">${{ product.price }}</span>
+            </div>
+            <button class="btn" onclick="cart.addItem({id: {{ product.id }}, name: '{{ product.name }}', price: {{ product.price|float }}, image_url: '{{ product.image_url }}' })">ADD_TO_CART</button>
+            <div style="margin-top: 2rem;">
+                <a href="/products" class="btn btn-outline" style="font-size: 0.7rem;">&larr; RETURN_TO_CATALOG</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="reviews-section reveal">
+        <span class="section-title">USER_ASSESSMENTS</span>
+        <div class="review-form">
+            <form id="review-form">
+                <input type="hidden" id="product_id" value="{{ product.id }}">
+                <div class="form-group">
+                    <label for="rating">RATING (1-5)</label>
+                    <select id="rating" class="form-control">
+                        <option value="5">5 - MAXIMUM_TRUST</option>
+                        <option value="4">4 - HIGH_SECURITY</option>
+                        <option value="3">3 - STANDARD_VALIDATION</option>
+                        <option value="2">2 - MINIMAL_ENFORCEMENT</option>
+                        <option value="1">1 - SECURITY_FLAW_DETECTED</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="comment">COMMENT</label>
+                    <textarea id="comment" class="form-control" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline">SUBMIT_REVIEW</button>
+            </form>
+        </div>
+
+        <div class="reviews-list">
+            {% for review in reviews %}
+            <div class="review-item">
+                <div class="review-header">
+                    <span class="rating">[{{ '*' * review.rating }}{{ '-' * (5 - review.rating) }}]</span>
+                    <span style="color: #444; font-size: 0.8rem;">TIMESTAMP: {{ review.created_at }}</span>
+                </div>
+                <p style="color: #ccc;">{{ review.comment }}</p>
+            </div>
+            {% else %}
+            <p style="color: #444; padding: 2rem 0;">NO_REVIEWS_FOUND_IN_SYSTEM</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

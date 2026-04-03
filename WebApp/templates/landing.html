@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block body_class %}landing-page{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <span class="section-title">ESTABLISHED // 2026</span>
+        <h1>SECURE<br>BY.DESIGN</h1>
+        <p>Advanced cryptographic infrastructure and zero-trust distribution for modern enterprise protocols.</p>
+        <div style="margin-top: 3rem;">
+            <a href="/products" class="btn">EXPLORE_SOLUTIONS</a>
+        </div>
+    </div>
+</section>
+
+<section class="container" style="padding: 4rem 0; border-top: 1px solid var(--border-color);">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;">
+        <div class="reveal">
+            <h2 style="font-size: 2rem; margin-bottom: 2rem; font-weight: 900;">UNCOMPROMISED<br>SECURITY</h2>
+            <p style="color: #666; max-width: 400px;">Every solution is stress-tested in simulated adversarial environments to ensure maximum resilience against emerging threats.</p>
+        </div>
+        <div class="reveal">
+            <h2 style="font-size: 2rem; margin-bottom: 2rem; font-weight: 900;">GLOBAL<br>ENFORCEMENT</h2>
+            <p style="color: #666; max-width: 400px;">Deploy security policies across your entire network with millisecond precision and end-to-end auditability.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
