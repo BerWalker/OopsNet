@@ -80,6 +80,9 @@ The environment is managed via automated shell scripts to ensure consistent stat
 Ensure you have **Docker** and **Docker Compose** installed.
 
 ```bash
+# Copy example environment file to active .env
+cp .env.example .env
+
 # Set execute permissions
 chmod +x run.sh scripts/*.sh
 
