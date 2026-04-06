@@ -20,15 +20,14 @@ services:
       "
 
   # --- EXTERNAL HONEYPOT: DIONAEA ---
-  inet-honeypot-dionaea:
-    container_name: inet-honeypot-dionaea
+  inet-dionaea-01:
+    container_name: inet-dionaea-01
     image: dinotools/dionaea
-    hostname: inet-honeypot-dionaea
+    hostname: inet-dionaea-01
     restart: always
     networks:
       internet_net:
         ipv4_address: 10.0.10.20
-
 
   # --- EDGE FIREWALL (EXTERNAL) ---
   fw-edge-01:
@@ -60,8 +59,8 @@ services:
       "
 
   # --- ZONE: DMZ ---
-  dmz-webserver-01:
-    container_name: dmz-webserver-01
+  dmz-web-01:
+    container_name: dmz-web-01
     build: ./WebApp
     hostname: dmz-web-01
     tty: true
@@ -83,7 +82,7 @@ services:
         flask run --host=0.0.0.0 --port=80 --debug
       "
     depends_on:
-      - int-database-01
+      - int-db-01
 
   dmz-tanner-01:
     container_name: dmz-tanner-01
@@ -104,7 +103,7 @@ services:
         ipv4_address: 10.0.20.22
     depends_on:
       - dmz-tanner-01
-      - dmz-webserver-01
+      - dmz-web-01
 
   # --- INTERNAL FIREWALL ---
   fw-internal-01:
@@ -129,10 +128,10 @@ services:
       "
 
   # --- ZONE: INTERNAL ---
-  int-database-01:
-    container_name: int-database-01
+  int-db-01:
+    container_name: int-db-01
     image: postgres:15-alpine
-    hostname: int-database-01
+    hostname: int-db-01
     tty: true
     cap_add: [ NET_ADMIN ]
     environment:
@@ -152,10 +151,10 @@ services:
       "
 
   # --- INTERNAL HONEYPOT: KIPPO ---
-  int-honeypot-01:
-    container_name: int-honeypot-01
+  int-kippo-01:
+    container_name: int-kippo-01
     build: ./Kippo
-    hostname: int-honeypot-01
+    hostname: int-kippo-01
     user: root
     tty: true
     cap_add: [ NET_ADMIN ]

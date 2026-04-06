@@ -9,7 +9,7 @@ NC='\033[0m'
 # Target Configuration
 DIONAEA_IP="10.0.10.20"
 CLIENT_CONTAINER="inet-client-01"
-DIONAEA_CONTAINER="inet-honeypot-dionaea"
+DIONAEA_CONTAINER="inet-dionaea-01"
 
 echo -e "${BLUE}[+] STEP 1: Verifying Dionaea container status...${NC}"
 docker ps --filter "name=${DIONAEA_CONTAINER}" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"

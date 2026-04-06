@@ -46,9 +46,9 @@ check_port "inet-client-01" "10.0.30.10" "5432" "false" "Direct jump to Database
 check_port "inet-client-01" "10.0.30.10" "80" "false" "Direct jump to Internal"
 
 echo -e "\n${YELLOW}PHASE 3: DMZ ZONE -> INTERNAL NETWORK${NC}"
-check_port "dmz-webserver-01" "10.0.30.10" "5432" "true" "Database Connection Allowed"
-check_port "dmz-webserver-01" "10.0.30.10" "22" "false" "Internal SSH Attempt (Forbidden)"
-check_port "dmz-webserver-01" "10.0.30.10" "80" "false" "Internal HTTP Attempt (Forbidden)"
+check_port "dmz-web-01" "10.0.30.10" "5432" "true" "Database Connection Allowed"
+check_port "dmz-web-01" "10.0.30.10" "22" "false" "Internal SSH Attempt (Forbidden)"
+check_port "dmz-web-01" "10.0.30.10" "80" "false" "Internal HTTP Attempt (Forbidden)"
 
 echo -e "\n${YELLOW}PHASE 4: HONEYPOT AUDIT (Kippo)${NC}"
 check_port "fw-internal-01" "10.0.30.20" "22" "true" "Internal Access to Honeypot"

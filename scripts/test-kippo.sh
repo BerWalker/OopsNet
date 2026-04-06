@@ -10,7 +10,7 @@ NC='\033[0m'
 # Target Configuration
 KIPPO_IP="10.0.30.20"
 FW_INTERNAL="fw-internal-01"
-KIPPO_CONTAINER="int-honeypot-01"
+KIPPO_CONTAINER="int-kippo-01"
 
 echo -e "${BLUE}[+] STARTING KIPPO HONEYPOT TEST${NC}"
 
