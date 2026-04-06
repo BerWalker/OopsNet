@@ -9,7 +9,7 @@ services:
     networks:
       internet_net:
         ipv4_address: 10.0.10.10
-    command: sh -c "ip route del default && ip route add default via 10.0.10.254 && tail -f /dev/null"
+    command: sh -c "apk add --no-cache nmap && apk add --no-cache nikto && ip route del default && ip route add default via 10.0.10.254 && tail -f /dev/null"
 
   # --- EDGE FIREWALL (EXTERNAL) ---
   fw-edge-01:
@@ -19,6 +19,7 @@ services:
     cap_add: [ NET_ADMIN ]
     ports:
       - "8000:80"
+      - "8080:8080"
     sysctls:
       - net.ipv4.ip_forward=1
     networks:
@@ -33,6 +34,8 @@ services:
         iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT &&
         iptables -A FORWARD -p tcp --dport 80 -j ACCEPT &&
         iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.0.20.10:80 &&
+        iptables -A FORWARD -p tcp --dport 8080 -j ACCEPT &&
+        iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 10.0.20.22:8080 &&
         iptables -t nat -A POSTROUTING -j MASQUERADE &&
         tail -f /dev/null
       "
@@ -62,6 +65,27 @@ services:
       "
     depends_on:
       - int-database-01
+
+  dmz-tanner-01:
+    container_name: dmz-tanner-01
+    build: ./Tanner
+    hostname: dmz-tanner-01
+    tty: true
+    networks:
+      dmz_net:
+        ipv4_address: 10.0.20.21
+
+  dmz-snare-01:
+    container_name: dmz-snare-01
+    build: ./Snare
+    hostname: dmz-snare-01
+    tty: true
+    networks:
+      dmz_net:
+        ipv4_address: 10.0.20.22
+    depends_on:
+      - dmz-tanner-01
+      - dmz-webserver-01
 
   # --- INTERNAL FIREWALL ---
   fw-internal-01:

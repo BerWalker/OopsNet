@@ -51,7 +51,12 @@ echo -e "\n${YELLOW}4. HONEYPOT AUDIT (Kippo)${NC}"
 check_port "fw-internal-01" "10.0.30.20" "22" "true" "Internal Access to Honeypot"
 check_port "inet-client-01" "10.0.30.20" "22" "false" "External Access to Internal Honeypot"
 
-echo -e "\n${YELLOW}5. ICMP TEST (PING)${NC}"
+echo -e "\n${YELLOW}5. HONEYPOT AUDIT (Tanner/Snare - DMZ)${NC}"
+check_port "inet-client-01" "10.0.10.254" "8080" "true" "Internet -> Snare Web Honeypot (via FW)"
+check_port "inet-client-01" "10.0.20.21" "8090" "false" "Internet -> Tanner Backend (Forbidden)"
+check_port "dmz-snare-01" "10.0.20.21" "8090" "true" "Snare -> Tanner API (Analysis Link)"
+
+echo -e "\n${YELLOW}6. ICMP TEST (PING)${NC}"
 echo -n "  Ping Internet -> DMZ: "
 sudo docker exec inet-client-01 ping -c 1 -W 1 10.0.20.10 > /dev/null 2>&1
 if [ $? -ne 0 ]; then echo -e "${GREEN}BLOCKED (Correct)${NC}"; else echo -e "${RED}ALLOWED (Incorrect)${NC}"; fi
