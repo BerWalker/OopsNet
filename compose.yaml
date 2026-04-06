@@ -9,7 +9,26 @@ services:
     networks:
       internet_net:
         ipv4_address: 10.0.10.10
-    command: sh -c "apk add --no-cache nmap && apk add --no-cache nikto && ip route del default && ip route add default via 10.0.10.254 && tail -f /dev/null"
+    command: >
+      sh -c "
+        apk update && 
+        apk add --no-cache nmap curl nikto perl && 
+        ln -s /usr/bin/nikto.pl /usr/bin/nikto && 
+        ip route del default && 
+        ip route add default via 10.0.10.254 && 
+        tail -f /dev/null
+      "
+
+  # --- EXTERNAL HONEYPOT: DIONAEA ---
+  inet-honeypot-dionaea:
+    container_name: inet-honeypot-dionaea
+    image: dinotools/dionaea
+    hostname: inet-honeypot-dionaea
+    restart: always
+    networks:
+      internet_net:
+        ipv4_address: 10.0.10.20
+
 
   # --- EDGE FIREWALL (EXTERNAL) ---
   fw-edge-01:
