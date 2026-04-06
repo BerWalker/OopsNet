@@ -13,16 +13,20 @@ echo -e "${BLUE}=== STARTING OOPSNET INFRASTRUCTURE ===${NC}"
 echo -e "\n${YELLOW}[+] STEP 1: Performing Pre-check Cleanup...${NC}"
 ./scripts/cleanup-docker.sh
 
-echo -e "\n${YELLOW}[+] STEP 2: Validating Infrastructure Configuration...${NC}"
+echo -e "\n${YELLOW}[+] STEP 2: Preparing Shared Log Directories...${NC}"
+mkdir -p ./logs/{dionaea,tanner,snare,kippo/tty}
+sudo chmod -R 777 ./logs 2>/dev/null || true
+
+echo -e "\n${YELLOW}[+] STEP 3: Validating Infrastructure Configuration...${NC}"
 docker compose config -q || { echo -e "  [${RED}ERROR${NC}] Docker Compose validation failed!"; exit 1; }
 
-echo -e "\n${YELLOW}[+] STEP 3: Building and Starting Services...${NC}"
+echo -e "\n${YELLOW}[+] STEP 4: Building and Starting Services...${NC}"
 docker compose up -d
 
-echo -e "\n${YELLOW}[+] STEP 4: Services initializing (Waiting 5s)...${NC}"
+echo -e "\n${YELLOW}[+] STEP 5: Services initializing (Waiting 5s)...${NC}"
 sleep 5
 
-echo -e "\n${YELLOW}[+] STEP 5: Running Automated Security Audit...${NC}"
+echo -e "\n${YELLOW}[+] STEP 6: Running Automated Security Audit...${NC}"
 ./scripts/network_check-docker.sh
 
 echo -e "\n${GREEN}=== ALL PROCESSES COMPLETED SUCCESSFULLY ===${NC}"

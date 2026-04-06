@@ -15,4 +15,8 @@ else
     exit 1
 fi
 
+echo -e "\n${BLUE}[+] STEP 2: Removing shared log directories...${NC}"
+sudo rm -rf ./logs
+
+
 echo -e "\n${RED}[OK] PROJECT RESOURCES WIPED SUCCESSFULLY${NC}"

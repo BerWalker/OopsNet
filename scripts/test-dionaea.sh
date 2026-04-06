@@ -20,6 +20,6 @@ docker exec ${CLIENT_CONTAINER} curl -I -s --connect-timeout 2 http://${DIONAEA_
     || echo -e "${RED}[INFO] Curl connection closed (expected for honeypot behavior)${NC}"
 
 echo -e "\n${BLUE}[+] STEP 4: Checking Dionaea logs for connection events...${NC}"
-docker exec ${DIONAEA_CONTAINER} tail -n 20 /opt/dionaea/var/log/dionaea/dionaea.log
+docker exec ${DIONAEA_CONTAINER} grep -vi "debug" /opt/dionaea/var/log/dionaea/dionaea.log | tail -n 10
 
 echo -e "\n${BLUE}[OK] DIONAEA TEST COMPLETE${NC}"
