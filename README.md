@@ -8,11 +8,14 @@ The infrastructure simulates a professional enterprise environment with segmente
 
 ```mermaid
 graph TD
-    inet("Internet / WAN")
+    subgraph External ["Internet / WAN — 10.0.10.0/24"]
+        client("inet-client-01<br>Alpine · 10.0.10.10")
+        dionaea("inet-dionaea-01<br>Dionaea · 10.0.10.20<br>SMB · FTP · MySQL · ...")
+    end
 
     ext_fw("fw-edge-01<br>allowed: 80, 8080")
-    
-    inet --> ext_fw
+
+    client --> ext_fw
 
     subgraph DMZ ["DMZ — 10.0.20.0/24"]
         web("dmz-webserver-01<br>Flask · 10.0.20.10 · :80")
@@ -52,6 +55,7 @@ graph TD
 
 ### 1. External Zone (10.0.10.x)
 Represents the untrusted public internet. All traffic originating from here is strictly filtered by the Edge Firewall before reaching any services.
+- **Dionaea (`inet-dionaea-01` · `10.0.10.20`)**: A multiprotocol honeypot that exposes intentionally vulnerable service emulators (SMB, FTP, MySQL, MSSQL, SIP, and more) to attract and log exploitation attempts from the simulated internet. Logs are persisted to `./logs/dionaea/`.
 
 ### 2. Edge Firewall & DMZ (10.0.20.x)
 The **Edge Firewall (`fw-edge-01`)** acts as the primary gateway. It utilizes `iptables` to strictly permit only HTTP (Port 80) and Honeypot (Port 8080) traffic into the DMZ.
@@ -93,7 +97,18 @@ chmod +x run.sh scripts/*.sh
 
 ## Testing the Honeypots
 
-### 1. Kippo (Internal SSH)
+### 1. Dionaea (External Multiprotocol)
+Dionaea runs on the External Zone (`10.0.10.20`) and exposes emulated protocols. You can probe it from the `inet-client-01` container:
+
+```bash
+# Scan open ports on Dionaea from the simulated internet client
+docker exec -it inet-client-01 nmap -sV 10.0.10.20
+
+# Inspect captured logs on the host
+ls -lh logs/dionaea/
+```
+
+### 2. Kippo (Internal SSH)
 To test the Kippo honeypot located in the internal network (`10.0.30.20`), use the provided testing script:
 
 ```bash
@@ -111,7 +126,7 @@ docker exec -it fw-internal-01 ssh -o KexAlgorithms=+diffie-hellman-group1-sha1 
 docker exec -it int-honeypot-01 cat log/kippo.log
 ```
 
-### 2. Tanner/Snare (DMZ Web)
+### 3. Tanner/Snare (DMZ Web)
 To verify the modern web honeypot framework, use the dedicated end-to-end test script:
 
 ```bash
@@ -125,9 +140,9 @@ This script:
 3.  Simulates an SQL injection attack and confirms Tanner logs the detection.
 
 ## Ongoing Roadmap
-With **Kippo** and **Tanner/Snare** now fully integrated, the foundation for active deception is established. Future expansion includes:
+With **Kippo**, **Tanner/Snare**, and **Dionaea** now fully integrated, the foundation for active deception is established. Future expansion includes:
 - [x] **Tanner/Snare**: Deployment in the DMZ for web application deception.
-- [ ] **Dionaea**: Deployment for multiprotocol capture (SMB, MySQL, etc.).
+- [x] **Dionaea**: Deployment in the External Zone for multiprotocol capture (SMB, FTP, MySQL, etc.).
 - [ ] **Wazuh Integration**: Centralizing alerts from all honeypots into a unified SIEM dashboard.
 
 ---
