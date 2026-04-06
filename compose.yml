@@ -1,5 +1,5 @@
 services:
-  # --- ZONA: INTERNET ---
+  # --- ZONE: INTERNET ---
   inet-client-01:
     container_name: inet-client-01
     image: alpine:latest
@@ -11,7 +11,7 @@ services:
         ipv4_address: 10.0.10.10
     command: sh -c "ip route del default && ip route add default via 10.0.10.254 && tail -f /dev/null"
 
-  # --- FIREWALL DE BORDA (EXTERNO) ---
+  # --- EDGE FIREWALL (EXTERNAL) ---
   fw-edge-01:
     container_name: fw-edge-01
     image: alpine:latest
@@ -37,7 +37,7 @@ services:
         tail -f /dev/null
       "
 
-  # --- ZONA: DMZ ---
+  # --- ZONE: DMZ ---
   dmz-webserver-01:
     container_name: dmz-webserver-01
     build: ./WebApp
@@ -63,7 +63,7 @@ services:
     depends_on:
       - int-database-01
 
-  # --- FIREWALL INTERNO ---
+  # --- INTERNAL FIREWALL ---
   fw-internal-01:
     container_name: fw-internal-01
     image: alpine:latest
@@ -85,7 +85,7 @@ services:
         tail -f /dev/null
       "
 
-  # --- ZONA: INTERNA ---
+  # --- ZONE: INTERNAL ---
   int-database-01:
     container_name: int-database-01
     image: postgres:15-alpine

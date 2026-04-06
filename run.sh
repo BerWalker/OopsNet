@@ -4,8 +4,10 @@ set -e
 
 ./scripts/cleanup-docker.sh
 
-sudo docker compose up -d
+docker login
+
+docker compose up -d
 
 ./scripts/network_check-docker.sh
 
-echo "Processo concluído!"
+echo "Process completed!"

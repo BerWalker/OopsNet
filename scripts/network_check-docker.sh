@@ -1,12 +1,12 @@
 #!/bin/bash
-# Cores para o terminal
+# Terminal colors
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo -e "${BLUE}--- AUDITORIA DE SEGURANÇA: DOUBLE FIREWALL ---${NC}"
+echo -e "${BLUE}--- SECURITY AUDIT: DOUBLE FIREWALL ---${NC}"
 
 check_port() {
     local origin=$1
@@ -20,36 +20,36 @@ check_port() {
 
     if [ "$expected" = "true" ]; then
         if [ $status -eq 0 ]; then
-            echo -e "  [${GREEN}OK${NC}] $desc (Porta $port): LIBERADO"
+            echo -e "  [${GREEN}OK${NC}] $desc (Port $port): ALLOWED"
         else
-            echo -e "  [${RED}FALHA${NC}] $desc (Porta $port): BLOQUEADO INDEVIDAMENTE"
+            echo -e "  [${RED}FAILURE${NC}] $desc (Port $port): IMPROPERLY BLOCKED"
         fi
     else
         if [ $status -ne 0 ]; then
-            echo -e "  [${GREEN}OK${NC}] $desc (Porta $port): BLOQUEADO"
+            echo -e "  [${GREEN}OK${NC}] $desc (Port $port): BLOCKED"
         else
-            echo -e "  [${RED}ALERTA${NC}] $desc (Porta $port): VULNERÁVEL (Aberto!)"
+            echo -e "  [${RED}ALERT${NC}] $desc (Port $port): VULNERABLE (Open!)"
         fi
     fi
 }
 
-echo -e "\n${YELLOW}1. ZONA EXTERNA (Internet) -> DMZ${NC}"
-check_port "inet-client-01" "10.0.20.10" "80" "true" "Acesso Web Permitido"
-check_port "inet-client-01" "10.0.20.10" "22" "false" "Tentativa SSH (Proibido)"
-check_port "inet-client-01" "10.0.20.10" "443" "false" "Tentativa HTTPS (Não configurado)"
+echo -e "\n${YELLOW}1. EXTERNAL ZONE (Internet) -> DMZ${NC}"
+check_port "inet-client-01" "10.0.20.10" "80" "true" "Web Access Allowed"
+check_port "inet-client-01" "10.0.20.10" "22" "false" "SSH Attempt (Forbidden)"
+check_port "inet-client-01" "10.0.20.10" "443" "false" "HTTPS Attempt (Not configured)"
 
-echo -e "\n${YELLOW}2. ZONA EXTERNA (Internet) -> REDE INTERNA${NC}"
-check_port "inet-client-01" "10.0.30.10" "5432" "false" "Salto direto p/ Banco"
-check_port "inet-client-01" "10.0.30.10" "80" "false" "Salto direto p/ Interna"
+echo -e "\n${YELLOW}2. EXTERNAL ZONE (Internet) -> INTERNAL NETWORK${NC}"
+check_port "inet-client-01" "10.0.30.10" "5432" "false" "Direct jump to Database"
+check_port "inet-client-01" "10.0.30.10" "80" "false" "Direct jump to Internal"
 
-echo -e "\n${YELLOW}3. ZONA DMZ -> REDE INTERNA${NC}"
-check_port "dmz-webserver-01" "10.0.30.10" "5432" "true" "Conexão de Banco Permitida"
-check_port "dmz-webserver-01" "10.0.30.10" "22" "false" "Tentativa SSH Interno (Proibido)"
-check_port "dmz-webserver-01" "10.0.30.10" "80" "false" "Tentativa HTTP Interno (Proibido)"
+echo -e "\n${YELLOW}3. DMZ ZONE -> INTERNAL NETWORK${NC}"
+check_port "dmz-webserver-01" "10.0.30.10" "5432" "true" "Database Connection Allowed"
+check_port "dmz-webserver-01" "10.0.30.10" "22" "false" "Internal SSH Attempt (Forbidden)"
+check_port "dmz-webserver-01" "10.0.30.10" "80" "false" "Internal HTTP Attempt (Forbidden)"
 
-echo -e "\n${YELLOW}4. TESTE DE ICMP (PING)${NC}"
+echo -e "\n${YELLOW}4. ICMP TEST (PING)${NC}"
 echo -n "  Ping Internet -> DMZ: "
 sudo docker exec inet-client-01 ping -c 1 -W 1 10.0.20.10 > /dev/null 2>&1
-if [ $? -ne 0 ]; then echo -e "${GREEN}BLOQUEADO (Correto)${NC}"; else echo -e "${RED}LIBERADO (Incorreto)${NC}"; fi
+if [ $? -ne 0 ]; then echo -e "${GREEN}BLOCKED (Correct)${NC}"; else echo -e "${RED}ALLOWED (Incorrect)${NC}"; fi
 
-echo -e "\n${BLUE}--- FIM DA AUDITORIA ---${NC}"
+echo -e "\n${BLUE}--- END OF AUDIT ---${NC}"
