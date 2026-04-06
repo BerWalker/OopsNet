@@ -108,6 +108,24 @@ services:
         docker-entrypoint.sh postgres
       "
 
+  # --- INTERNAL HONEYPOT: KIPPO ---
+  int-honeypot-01:
+    container_name: int-honeypot-01
+    build: ./Kippo
+    hostname: int-honeypot-01
+    user: root
+    tty: true
+    cap_add: [ NET_ADMIN ]
+    networks:
+      internal_net:
+        ipv4_address: 10.0.30.20
+    command: >
+      sh -c "
+        ip route del default 2>/dev/null;
+        ip route add default via 10.0.30.254 &&
+        cd /home/kippo/kippo && su kippo -c './start.sh'
+      "
+
 networks:
   internet_net:
     driver: bridge

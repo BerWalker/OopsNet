@@ -34,7 +34,7 @@ graph TD
         erp("erp-system")
         smb("fileshare")
         db("int-database-01<br>PostgreSQL 14 · 10.0.30.10 · :5432")
-        hp_int("⚠️ honeypot — internal")
+        hp_int("kippo-honeypot<br>SSH · 10.0.30.20 · :22")
 
         subgraph wazuh_zone ["Wazuh SIEM"]
             direction LR
@@ -49,6 +49,7 @@ graph TD
         ws -.-> smb
         ws -.-> w_mgr
         erp -.-> db
+        hp_int
     end
 
     int_fw --> Internal
@@ -92,8 +93,29 @@ chmod +x run.sh scripts/*.sh
 
 - **Access Point**: The DMZ WebApp (simulated service) is reachable at `http://localhost:8000`.
 
-## Future Roadmap
-This infrastructure serves as the baseline for the upcoming implementation of **Honeypots** (Dionaea, Cowrie, etc.). The existing WebApp and Database are currently used as the "target" or "bait" services to evaluate the efficiency of the perimeter defense before introducing advanced detection nodes.
+## Testing the Honeypot (Kippo)
+
+To test the Kippo honeypot located in the internal network (`10.0.30.20`), use the provided testing script:
+
+```bash
+chmod +x scripts/test-kippo.sh
+./scripts/test-kippo.sh
+```
+
+Alternatively, you can manually connect from the internal firewall:
+
+```bash
+# Connect with required legacy SSH algorithms
+docker exec -it fw-internal-01 ssh -o KexAlgorithms=+diffie-hellman-group1-sha1 -o HostKeyAlgorithms=+ssh-rsa -o Ciphers=+aes128-cbc -o StrictHostKeyChecking=no root@10.0.30.20
+
+# View logs on the honeypot container
+docker exec -it int-honeypot-01 cat log/kippo.log
+```
+
+## Ongoing Roadmap
+With **Kippo** now integrated into the Internal Network, the foundation for active deception is established. Future expansion includes:
+- **Dionaea**: Deployment in the DMZ for multiprotocol capture.
+- **Wazuh Integration**: Centralizing alerts from Kippo and Dionaea into the SIEM dashboard.
 
 ---
 *Disclaimer: This is a simulated environment intended for cybersecurity research and demonstration purposes.*

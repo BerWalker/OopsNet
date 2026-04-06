@@ -47,7 +47,11 @@ check_port "dmz-webserver-01" "10.0.30.10" "5432" "true" "Database Connection Al
 check_port "dmz-webserver-01" "10.0.30.10" "22" "false" "Internal SSH Attempt (Forbidden)"
 check_port "dmz-webserver-01" "10.0.30.10" "80" "false" "Internal HTTP Attempt (Forbidden)"
 
-echo -e "\n${YELLOW}4. ICMP TEST (PING)${NC}"
+echo -e "\n${YELLOW}4. HONEYPOT AUDIT (Kippo)${NC}"
+check_port "fw-internal-01" "10.0.30.20" "22" "true" "Internal Access to Honeypot"
+check_port "inet-client-01" "10.0.30.20" "22" "false" "External Access to Internal Honeypot"
+
+echo -e "\n${YELLOW}5. ICMP TEST (PING)${NC}"
 echo -n "  Ping Internet -> DMZ: "
 sudo docker exec inet-client-01 ping -c 1 -W 1 10.0.20.10 > /dev/null 2>&1
 if [ $? -ne 0 ]; then echo -e "${GREEN}BLOCKED (Correct)${NC}"; else echo -e "${RED}ALLOWED (Incorrect)${NC}"; fi
