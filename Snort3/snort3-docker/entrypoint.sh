@@ -5,7 +5,7 @@
 DAQ_PATH="/usr/local/lib/daq"
 
 # Define interface (default to eth0 if not set)
-INTERFACE=${INTERFACE:-}
+INTERFACE=${INTERFACE:-eth0}
 
 # Define main configuration file
 MAIN_CONF="/usr/local/etc/snort/snort.lua"
