@@ -1,5 +1,5 @@
-#!/bin/sh
-# author="Sevendi Eldrige Rifki Poluan" email="sevendipoluan@gmail.com"
+#!/bin/bash
+set -e
 
 # Define DAQ path
 DAQ_PATH="/usr/local/lib/daq"

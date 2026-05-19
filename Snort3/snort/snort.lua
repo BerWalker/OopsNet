@@ -21,11 +21,11 @@
 
 -- HOME_NET and EXTERNAL_NET must be set now
 -- setup the network addresses you are protecting
-HOME_NET = '192.168.65.3/32'
+HOME_NET = 'any'
 
 -- set up the external network addresses.
 -- (leave as "any" in most situations)
-EXTERNAL_NET = '!$HOME_NET'
+EXTERNAL_NET = 'any'
 
 include 'snort_defaults.lua'
 
@@ -88,7 +88,7 @@ http_inspect = { }
 http2_inspect = { }
 
 -- see file_magic.rules for file id rules
-file_id = { rules_file = 'file_magic.rules' }
+file_inspect = { rules_file = 'file_magic.rules' }
 file_policy = { }
 
 js_norm = default_js_norm

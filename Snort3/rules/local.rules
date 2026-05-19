@@ -1,0 +1,2 @@
+alert icmp any any -> $HOME_NET any (msg:"Someone ping you!"; sid:10000001; rev:1; classtype:icmp-event;)
+alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS ( msg:"SERVER-WEBAPP /etc/passwd file access attempt"; flow:to_server,established; http_uri; content:"/etc/passwd",fast_pattern,nocase; metadata:policy max-detect-ips drop,ruleset community; service:http; reference:url,attack.mitre.org/techniques/T1087; classtype:attempted-recon; sid:1122; rev:16; )

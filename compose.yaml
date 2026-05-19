@@ -173,6 +173,23 @@ services:
         cd /home/kippo/kippo && su kippo -c './start.sh'
       "
 
+  ids-snort-01:
+    container_name: ids-snort-01
+    build: ./Snort3
+    hostname: ids-snort-01
+    restart: unless-stopped
+    tty: true
+    privileged: true
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/lib/
+      - PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+    volumes:
+      - ./logs/snort:/var/log/snort/
+      - ./Snort3/rules:/usr/local/etc/rules
+      - ./Snort3/lists:/usr/local/etc/lists/
+      - ./Snort3/snort/:/usr/local/etc/snort/
+    network_mode: "host"
+
 networks:
   internet_net:
     driver: bridge
