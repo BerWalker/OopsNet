@@ -12,7 +12,7 @@ services:
     command: >
       sh -c "
         apk update && 
-        apk add --no-cache nmap curl nikto perl && 
+        apk add --no-cache nmap curl nikto perl wget && 
         ln -s /usr/bin/nikto.pl /usr/bin/nikto && 
         ip route del default && 
         ip route add default via 10.0.10.254 && 
@@ -51,11 +51,8 @@ services:
         apk add --no-cache iptables &&
         iptables -P FORWARD DROP &&
         iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT &&
-        iptables -A FORWARD -p tcp --dport 80 -j ACCEPT &&
-        iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.0.20.10:80 &&
-        iptables -A FORWARD -p tcp --dport 8080 -j ACCEPT &&
-        iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 10.0.20.22:8080 &&
-        iptables -t nat -A POSTROUTING -j MASQUERADE &&
+        iptables -A FORWARD -s 10.0.10.0/24 -d 10.0.20.10 -p tcp --dport 80 -j ACCEPT &&
+        iptables -A FORWARD -s 10.0.10.0/24 -d 10.0.20.22 -p tcp --dport 8080 -j ACCEPT &&   
         tail -f /dev/null
       "
 
@@ -76,7 +73,7 @@ services:
         apk add --no-cache iptables &&
         iptables -P FORWARD DROP &&
         iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT &&
-        iptables -A FORWARD -s 10.0.20.0/24 -d 10.0.30.0/24 -p tcp --dport 5432 -j ACCEPT &&
+        iptables -A FORWARD -s 10.0.20.0/24 -d 10.0.30.10 -p tcp --dport 5432 -j ACCEPT &&
         tail -f /dev/null
       "
 
@@ -173,22 +170,25 @@ services:
         cd /home/kippo/kippo && su kippo -c './start.sh'
       "
 
-  ids-snort-01:
-    container_name: ids-snort-01
-    build: ./Snort3
-    hostname: ids-snort-01
-    restart: unless-stopped
-    tty: true
-    privileged: true
-    environment:
-      - LD_LIBRARY_PATH=/usr/local/lib/
-      - PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+  ids-edge-01:
+    container_name: snort-edge-01
+    build: ./Snort
+    network_mode: "container:fw-edge-01"
+    depends_on:
+      - fw-edge-01
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
     volumes:
-      - ./logs/snort:/var/log/snort/
-      - ./Snort3/rules:/usr/local/etc/rules
-      - ./Snort3/lists:/usr/local/etc/lists/
-      - ./Snort3/snort/:/usr/local/etc/snort/
-    network_mode: "host"
+      - ./Snort/lua:/usr/etc/snort
+      - ./Snort/rules:/usr/etc/rules
+      - ./logs/snort:/var/log/snort
+    command: >
+      sh -c "
+        mkdir -p /var/log/snort &&
+        snort -c /usr/etc/snort/snort.lua -i eth0:eth1 -l /var/log/snort -R /usr/etc/rules/local.rules -s 65535 -k none -A alert_fast
+      "
 
 networks:
   internet_net:

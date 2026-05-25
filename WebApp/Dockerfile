@@ -5,6 +5,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     netcat-traditional \
     iproute2 \
+    curl \
+    wget \
     libpq-dev \
     gcc \
     && rm -rf /var/lib/apt/lists/*
