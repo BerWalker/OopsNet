@@ -36,9 +36,6 @@ services:
     image: alpine:latest
     hostname: fw-edge-01
     cap_add: [ NET_ADMIN ]
-    ports:
-      - "8000:80"
-      - "8080:8080"
     sysctls:
       - net.ipv4.ip_forward=1
     networks:
@@ -170,7 +167,7 @@ services:
         cd /home/kippo/kippo && su kippo -c './start.sh'
       "
 
-  ids-edge-01:
+  snort-edge-01:
     container_name: snort-edge-01
     build: ./Snort
     network_mode: "container:fw-edge-01"
