@@ -12,7 +12,7 @@ services:
     command: >
       sh -c "
         apk update && 
-        apk add --no-cache nmap curl nikto perl wget && 
+        apk add --no-cache nmap curl nikto python3 perl wget && 
         ln -s /usr/bin/nikto.pl /usr/bin/nikto && 
         ip route del default && 
         ip route add default via 10.0.10.254 && 
